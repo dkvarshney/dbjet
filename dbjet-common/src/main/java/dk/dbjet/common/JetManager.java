@@ -58,4 +58,14 @@ public interface JetManager <T extends JetModel> {
 	 * @throws JetException
 	 */
 	List<T>search(JetSearchCriteria filter, JetSearchControl control) throws SQLException, JetException;
+	
+	/**
+	 * Count the records based on given filter criteria.
+	 * 
+	 * @param filter
+	 * @return
+	 * @throws SQLException
+	 * @throws JetException
+	 */
+	Long count(JetSearchCriteria filter) throws SQLException, JetException;
 }

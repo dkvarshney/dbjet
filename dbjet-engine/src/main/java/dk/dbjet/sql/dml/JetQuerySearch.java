@@ -34,8 +34,9 @@ public class JetQuerySearch extends JetDMLQuery {
 				List<String> columnsName = JetReflectionFactory.getInstance().getColumnsName(this.model.getClass());				
 				for (String column : this.searchControl.getColumns()) {
 					if (!columnsName.contains(column)) {
-						throw new JetRuntimeException(column + " unknown column");
+						throw new JetRuntimeException("Unknown column: " + column);
 					}
+					// TODO: Check @JetColumnSearchable
 				}
 				columns = String.join(",", this.searchControl.getColumns());
 			}			

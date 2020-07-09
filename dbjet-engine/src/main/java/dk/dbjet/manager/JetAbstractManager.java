@@ -36,6 +36,7 @@ import dk.dbjet.filter.JetSearchCriteria;
 import dk.dbjet.marshaller.JetMarshaller;
 import dk.dbjet.sql.common.JetTransaction;
 import dk.dbjet.sql.dml.JetDMLQuery;
+import dk.dbjet.sql.dml.JetQueryCount;
 import dk.dbjet.sql.dml.JetQueryDelete;
 import dk.dbjet.sql.dml.JetQueryGet;
 import dk.dbjet.sql.dml.JetQueryInsert;
@@ -58,6 +59,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 	 * @throws SQLException
 	 * @throws JetException
 	 */
+	@Override
 	public T insert(T model) throws SQLException, JetException {
 		JetDMLQuery insert = new JetQueryInsert(model);
 		Connection connection = getConnection();
@@ -83,6 +85,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 	 * @throws SQLException
 	 * @throws JetException
 	 */
+	@Override
 	public void update(Object pkValue, T model) throws SQLException, JetException {
 		JetDMLQuery update = new JetQueryUpdate(pkValue, model);
 		Connection connection = getConnection();
@@ -103,6 +106,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 	 * @throws SQLException
 	 * @throws JetException
 	 */
+	@Override
 	public void delete(Object pkValue) throws SQLException, JetException {	
 		try {
 			JetModel model = getModelType().newInstance();
@@ -129,6 +133,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 	 * @throws SQLException
 	 * @throws JetException
 	 */
+	@Override
 	public T get(Object pkValue) throws SQLException, JetException {		
 		try {
 			JetModel model = getModelType().newInstance();
@@ -163,6 +168,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 	 * @throws SQLException
 	 * @throws JetException
 	 */
+	@Override
 	public List<T>search(JetSearchCriteria filter, JetSearchControl control) throws SQLException, JetException {
 		try {
 			JetModel model = getModelType().newInstance();
@@ -183,6 +189,36 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 		}
 	}
 
+	/**
+	 * Count the records based on given filter criteria.
+	 * 
+	 * @param filter
+	 * @return
+	 * @throws SQLException
+	 * @throws JetException
+	 */
+	@Override
+	public Long count(JetSearchCriteria filter) throws SQLException, JetException {
+		try {
+			JetModel model = getModelType().newInstance();
+			JetDMLQuery search = new JetQueryCount(model, filter);
+			Connection connection = getConnection();
+			try (PreparedStatement statement = search.toStatement(connection)) {
+				logger.log(Level.INFO, "DBJet - {0}", statement);
+				try (ResultSet resultSet = statement.executeQuery()) {
+					if (resultSet.next()) {
+						return resultSet.getLong(1);
+					} else {
+						return Long.valueOf(0L);
+					}
+				}
+			} finally {
+				closeConnectionIfRequired(connection);
+			}
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new JetException(e.getMessage());
+		}
+	}
 
 	protected final Connection getConnection() throws SQLException {
 		if (Objects.nonNull(transaction) && transaction.isActive()) {
@@ -258,6 +294,10 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 					//unmarshal the value					
 					byte[] umlValue = marshaller.unmarshal(column, vaule);
 					field.set(model, umlValue);
+				} else if (column.type() == JetColumnType.FLOAT) { 
+					field.set(model, resultSet.getFloat(column.name()));
+				} else if (column.type() == JetColumnType.LONG) { 
+					field.set(model, resultSet.getLong(column.name()));
 				} else if (column.type() == JetColumnType.TIMESTAMP) { 
 					field.set(model, resultSet.getTimestamp(column.name()));
 				} else if (column.type() == JetColumnType.DATETIME) { 
@@ -300,7 +340,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 	}
 
 	@SuppressWarnings("unchecked")
-	final Class<T> getModelType() {
+	protected final Class<T> getModelType() {
 		return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 }

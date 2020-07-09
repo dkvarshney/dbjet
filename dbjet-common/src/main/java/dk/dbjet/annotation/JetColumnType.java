@@ -27,6 +27,11 @@ public enum JetColumnType {
 	INTEGER (Integer.class, true),
 	
 	/**
+	 * long or Long.
+	 */
+	LONG (Long.class, true),
+	
+	/**
 	 * Float or Double.
 	 */
 	FLOAT (Float.class, false),

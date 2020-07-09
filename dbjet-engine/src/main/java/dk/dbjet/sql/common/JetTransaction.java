@@ -58,7 +58,7 @@ public final class JetTransaction implements AutoCloseable {
 	}
 
 	public void close() {
-		this.isActive = false;
+		this.isActive = false;		
 		if (this.connection != null) {
 			try {
 				this.connection.close();

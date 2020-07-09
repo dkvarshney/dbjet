@@ -55,6 +55,10 @@ public abstract class JetDMLQuery extends JetQuery {
 					statement.setBinaryStream(stIndex, new ByteArrayInputStream(mlValue));					
 				} else if (column.type() == JetColumnType.FLOAT) {					
 					statement.setFloat(stIndex, (Float) value);
+				} else if (column.type() == JetColumnType.LONG) {					
+					statement.setLong(stIndex, (Long) value);
+				} else if (column.type() == JetColumnType.BOOLEAN) {
+					statement.setBoolean(stIndex, (Boolean)value);
 				} else if (column.type() == JetColumnType.INTEGER) {
 					statement.setInt(stIndex, (Integer)value);
 				} else if (column.type() == JetColumnType.TIMESTAMP) {

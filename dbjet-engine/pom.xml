@@ -9,7 +9,7 @@
 	</parent>
 	<artifactId>dbjet-engine</artifactId>
 	<packaging>jar</packaging>
-	<name>dbjet-engine</name>
+	<name>dbjet engine</name>
 	<dependencies>
 		<dependency>
 			<groupId>dkvarshney</groupId>

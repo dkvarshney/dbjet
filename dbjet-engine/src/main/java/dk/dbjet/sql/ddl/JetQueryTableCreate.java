@@ -38,6 +38,8 @@ public class JetQueryTableCreate extends JetDDLQuery {
 				columns.add(String.format("%s BLOB", column.name()));
 			} else if (column.type() == JetColumnType.INTEGER) {
 				columns.add(String.format("%s INT", column.name()));
+			} else if (column.type() == JetColumnType.LONG) {
+				columns.add(String.format("%s BIGINT", column.name()));
 			} else if (column.type() == JetColumnType.FLOAT) {
 				columns.add(String.format("%s FLOAT", column.name()));
 			} else if (column.type() == JetColumnType.BOOLEAN) {
