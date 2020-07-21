@@ -64,7 +64,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 		JetDMLQuery insert = new JetQueryInsert(model);
 		Connection connection = getConnection();
 		try (PreparedStatement statement = insert.toStatement(connection)) {
-			logger.log(Level.INFO, "DBJet - {0}", statement);
+			logger.log(Level.FINE, "DBJet - {0}", statement);
 			if (statement.executeUpdate() > 0) {
 				return model;
 			} else {
@@ -90,7 +90,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 		JetDMLQuery update = new JetQueryUpdate(pkValue, model);
 		Connection connection = getConnection();
 		try (PreparedStatement statement = update.toStatement(connection)) {
-			logger.log(Level.INFO, "DBJet - {0}", statement);
+			logger.log(Level.FINE, "DBJet - {0}", statement);
 			if (statement.executeUpdate() == 0) {
 				throw new JetResourceNotFoundException(String.format(ERR_RESOURCE_NOT_FOUND, pkValue));
 			}
@@ -113,7 +113,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 			JetDMLQuery delete = new JetQueryDelete(pkValue, model);
 			Connection connection = getConnection();
 			try (PreparedStatement statement = delete.toStatement(connection)) {
-				logger.log(Level.INFO, "DBJet - {0}", statement);
+				logger.log(Level.FINE, "DBJet - {0}", statement);
 				if (statement.executeUpdate() == 0) {
 					throw new JetResourceNotFoundException(String.format(ERR_RESOURCE_NOT_FOUND, pkValue));
 				}
@@ -140,7 +140,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 			JetDMLQuery get = new JetQueryGet(pkValue, model);
 			Connection connection = getConnection();
 			try (PreparedStatement statement = get.toStatement(connection)) {
-				logger.log(Level.INFO, "DBJet - {0}", statement);
+				logger.log(Level.FINE, "DBJet - {0}", statement);
 				try (ResultSet resultSet = statement.executeQuery()) {
 					T resource = toModel(resultSet, model.getClass());
 					if (resource == null) {
@@ -175,7 +175,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 			JetDMLQuery search = new JetQuerySearch(model, filter, control);
 			Connection connection = getConnection();
 			try (PreparedStatement statement = search.toStatement(connection)) {
-				logger.log(Level.INFO, "DBJet - {0}", statement);
+				logger.log(Level.FINE, "DBJet - {0}", statement);
 				try (ResultSet resultSet = statement.executeQuery()) {
 					return toModelList(resultSet, model.getClass());									
 				}
@@ -204,7 +204,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 			JetDMLQuery search = new JetQueryCount(model, filter);
 			Connection connection = getConnection();
 			try (PreparedStatement statement = search.toStatement(connection)) {
-				logger.log(Level.INFO, "DBJet - {0}", statement);
+				logger.log(Level.FINE, "DBJet - {0}", statement);
 				try (ResultSet resultSet = statement.executeQuery()) {
 					if (resultSet.next()) {
 						return resultSet.getLong(1);
@@ -222,10 +222,10 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 
 	protected final Connection getConnection() throws SQLException {
 		if (Objects.nonNull(transaction) && transaction.isActive()) {
-			logger.log(Level.INFO, "Using DB connection within transaction: " + transaction.getName());
+			logger.log(Level.FINE, "Using DB connection within transaction: " + transaction.getName());
 			return this.transaction.getConnection();
 		} else {
-			logger.log(Level.INFO, "Using new DB connection");
+			logger.log(Level.FINE, "Using new DB connection");
 			this.transaction = null;
 			return JetConnectionPoolFactory.getConnectionPoolFactory().getDataSource().getConnection();			
 		}
@@ -235,7 +235,7 @@ public abstract class JetAbstractManager<T extends JetModel> implements JetManag
 		if (Objects.isNull(transaction) && Objects.nonNull(connection)) {
 			try {
 				connection.close();
-				logger.log(Level.INFO, "DB Connection closed");
+				logger.log(Level.FINE, "DB Connection closed");
 			} catch (Exception e) {
 				// Do nothing.
 			}
