@@ -43,7 +43,7 @@ public abstract class JetDMLQuery extends JetQuery {
 			try {
 				Object value = field.get(this.model);
 				JetColumn column = field.getAnnotation(JetColumn.class);
-				if (column.type() == JetColumnType.TEXT) {								
+				if (column.type() == JetColumnType.TEXT || column.type() == JetColumnType.BIGTEXT) {								
 					JetMarshaller<String> marshaller = column.marshaller().newInstance();
 					String mlValue = marshaller.marshal(column, (String) value);
 					statement.setString(stIndex, mlValue);

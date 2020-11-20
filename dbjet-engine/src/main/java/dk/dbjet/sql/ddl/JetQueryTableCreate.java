@@ -32,6 +32,8 @@ public class JetQueryTableCreate extends JetDDLQuery {
 			JetColumn column = field.getAnnotation(JetColumn.class);
 			if (column.type() == JetColumnType.TEXT) {
 				columns.add(String.format("%s VARCHAR(%d)", column.name(), column.size()));
+			} else if (column.type() == JetColumnType.BIGTEXT) { 
+				columns.add(String.format("%s TEXT", column.name()));				
 			} else if (column.type() == JetColumnType.ENUM) {
 				columns.add(String.format("%s VARCHAR(%d)", column.name(), column.size()));
 			} else if (column.type() == JetColumnType.BINARY) {
@@ -46,13 +48,13 @@ public class JetQueryTableCreate extends JetDDLQuery {
 				columns.add(String.format("%s TINYINT(1)", column.name()));
 			} else if (column.type() == JetColumnType.TIMESTAMP) {
 				if (column.defaultValue() == JetColumnValue.CURRENT_TIMESTAMP_ON_UPDATE) {
-					columns.add(String.format("%s TIMESTAMP DEFAULT CURRENT_TIMESTAMP", column.name()));					
+					columns.add(String.format("%s TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", column.name()));					
 				} else {
 					columns.add(String.format("%s TIMESTAMP", column.name()));	
 				}
 			} else if (column.type() == JetColumnType.DATETIME) {
 				if (column.defaultValue() == JetColumnValue.CURRENT_TIMESTAMP_ON_UPDATE) {
-					columns.add(String.format("%s DATETIME DEFAULT CURRENT_TIMESTAMP", column.name()));					
+					columns.add(String.format("%s DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", column.name()));					
 				} else {
 					columns.add(String.format("%s DATETIME", column.name()));	
 				}

@@ -7,6 +7,11 @@ public enum JetColumnType {
 	TEXT (String.class, true),
 	
 	/**
+	 * BigText or String.
+	 */
+	BIGTEXT (String.class, false),
+	
+	/**
 	 * Enumeration.
 	 */
 	ENUM (Enum.class, false),
