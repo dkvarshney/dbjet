@@ -26,5 +26,15 @@ public interface JetSearchControl {
 		public String toClauseString() {
 			return this.clause;
 		}
+		
+		public static SortOrder fromString(String string) {
+			String upr = string.toUpperCase();
+			for(SortOrder so : SortOrder.values()) {
+				if (so.name().startsWith(upr)) {
+					return so;
+				}
+			}
+			throw new IllegalArgumentException("Unknown sortOrder: " + string);
+		}
 	}
 }

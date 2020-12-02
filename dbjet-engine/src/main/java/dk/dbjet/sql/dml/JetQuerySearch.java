@@ -28,7 +28,7 @@ public class JetQuerySearch extends JetDMLQuery {
 	public PreparedStatement toStatement(Connection con) throws SQLException, JetQueryException {
 		String table = getTableName();
 		String columns = "*";
-		String controls = "";				
+		StringBuilder controls = new StringBuilder("");
 		if (this.searchControl != null) {
 			if (CommonUtils.isNotEmpty(this.searchControl.getColumns())) {				
 				List<String> columnsName = JetReflectionFactory.getInstance().getColumnsName(this.model.getClass());				
@@ -39,16 +39,21 @@ public class JetQuerySearch extends JetDMLQuery {
 					// TODO: Check @JetColumnSearchable
 				}
 				columns = String.join(",", this.searchControl.getColumns());
-			}			
+			} 
+			
+			// update ORDERBY in Query.
 			if (CommonUtils.isNotEmpty(this.searchControl.getSortBy())) {
-				controls = controls + " ORDER BY " + this.searchControl.getSortBy() + " " + this.searchControl.getSortOrder().toClauseString();
+				controls.append(" ORDER BY ").append(this.searchControl.getSortBy())
+						.append(" ").append(this.searchControl.getSortOrder().toClauseString());
 			}
-			controls = String.format(" LIMIT %d, %d", ((this.searchControl.getPage()-1) * this.searchControl.getSize()), this.searchControl.getSize());
+			
+			// update LIMIT in Query.
+			controls.append(String.format(" LIMIT %d, %d", ((this.searchControl.getPage()-1) * this.searchControl.getSize()), this.searchControl.getSize()));
 		}
 		String sql = String.format("SELECT %s FROM %s", columns, table);
 		if (this.searchFilter != null) {
 			sql = sql + " WHERE " + this.searchFilter.toClauseString();
 		}
-		return con.prepareStatement(sql + controls);
+		return con.prepareStatement(sql + controls.toString());
 	}
 }
