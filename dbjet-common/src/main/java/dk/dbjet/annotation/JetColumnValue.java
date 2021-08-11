@@ -6,6 +6,16 @@ public enum JetColumnValue {
 	 */
 	NONE,
 	
+	/**
+	 * Allow NULL and set NULL as default value.
+	 */
+	NULL,
+	
+	
+	/**
+	 * Current system timestamp.
+	 */
+	CURRENT_TIMESTAMP,
 	
 	/**
 	 * Current system timestamp only on update.

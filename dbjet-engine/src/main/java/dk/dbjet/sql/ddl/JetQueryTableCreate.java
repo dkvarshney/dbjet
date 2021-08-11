@@ -47,17 +47,9 @@ public class JetQueryTableCreate extends JetDDLQuery {
 			} else if (column.type() == JetColumnType.BOOLEAN) {
 				columns.add(String.format("%s TINYINT(1)", column.name()));
 			} else if (column.type() == JetColumnType.TIMESTAMP) {
-				if (column.defaultValue() == JetColumnValue.CURRENT_TIMESTAMP_ON_UPDATE) {
-					columns.add(String.format("%s TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", column.name()));					
-				} else {
-					columns.add(String.format("%s TIMESTAMP", column.name()));	
-				}
+				columns.add(String.format("%s TIMESTAMP %s", column.name(), buildDefaultColumnValye(column)));
 			} else if (column.type() == JetColumnType.DATETIME) {
-				if (column.defaultValue() == JetColumnValue.CURRENT_TIMESTAMP_ON_UPDATE) {
-					columns.add(String.format("%s DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", column.name()));					
-				} else {
-					columns.add(String.format("%s DATETIME", column.name()));	
-				}
+				columns.add(String.format("%s DATETIME %s", column.name(), buildDefaultColumnValye(column)));
 			} 
 
 			// if column is primary
@@ -90,5 +82,17 @@ public class JetQueryTableCreate extends JetDDLQuery {
 			sql += String.format(", INDEX (%s)", String.join(", ", ixColumns));
 		}
 		return sql + ")" + SQL_DELIMITER;
+	}
+	
+	private String buildDefaultColumnValye(JetColumn column) {
+		if (column.defaultValue() == JetColumnValue.CURRENT_TIMESTAMP) {
+			return "DEFAULT CURRENT_TIMESTAMP";					
+		} else if (column.defaultValue() == JetColumnValue.CURRENT_TIMESTAMP_ON_UPDATE) {
+			return "DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
+		} else if (column.defaultValue() == JetColumnValue.NULL) {
+			return "NULL DEFAULT NULL";
+		} else {
+			return "";	
+		}
 	}
 }
