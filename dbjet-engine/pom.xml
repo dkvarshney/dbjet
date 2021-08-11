@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>dkvarshney</groupId>
 		<artifactId>dbjet</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>dbjet-engine</artifactId>
 	<packaging>jar</packaging>
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>dkvarshney</groupId>
 			<artifactId>dbjet-common</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
